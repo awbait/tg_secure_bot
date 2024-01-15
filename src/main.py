@@ -3,6 +3,7 @@ import schedule
 import asyncio
 import time
 import os
+from datetime import datetime
 from threading import Thread
 from telethon.sync import TelegramClient, events
 from telethon import errors
@@ -14,8 +15,7 @@ TG_API_ID = os.getenv('TG_API_ID', '1114086')
 TG_API_HASH = os.getenv('TG_API_HASH', '4960eb9dcee82fca3178a37dc8e360ed')
 TG_BOT_TOKEN = os.getenv('TG_BOT_TOKEN', '6968043363:AAGPkLQ7Ncc1MMCh7u3HY8xn_ndzXm9C3k8')
 TG_ADMIN_CHANNEL_ID = os.getenv('TG_ADMIN_CHANNEL_ID', -4063207053)
-
-SСHEDULE_TIME = os.getenv('SСHEDULE_TIME', '21:00')
+FIND_TIME = os.getenv('FIND_TIME', '21:00')
 
 # Functions
 def findUserByLogin(employees, login_to_find):
@@ -27,7 +27,6 @@ def findUserByLogin(employees, login_to_find):
 def telegramClientReconnect(client):
   try:
     client.start(bot_token=TG_BOT_TOKEN)
-    client.send_message(TG_ADMIN_CHANNEL_ID, f"Соединение бота было установлено или пеподключено.")
     return client
   except ConnectionError:
     # Обрыв соединения, переподключаемся
@@ -89,15 +88,17 @@ def run():
   client = TelegramClient('./sessions/check_session', TG_API_ID, TG_API_HASH, loop=loop)
 
   # Ставим на рассписание выполнение функции проверки пользователей
-  # schedule.every(1).minutes.do(checkUsers, client)
-  schedule.every().day.at(SСHEDULE_TIME).do(checkUsers, client)
+  schedule.every().day.at(FIND_TIME, "Europe/Moscow").do(checkUsers, client)
 
   # Цикл запуска расписаний
   while True:
     print('Проверяем, есть ли отложенные задачи, которые нужно выполнить')
     schedule.run_pending()
+    time_of_next_run = schedule.next_run()
+    time_now = datetime.now()
+    time_remaining = time_of_next_run - time_now
+    print(f"Next run in {time_of_next_run}. {time_remaining.seconds} remaining seconds")
     time.sleep(60)
-
 
 def main():
   # Telegram client initialization
@@ -127,7 +128,6 @@ def main():
   # Основной поток, который не будет завершаться и будет переподключаться при потере соединения
   connected = telegramClientReconnect(client)
   connected.run_until_disconnected()
-
 
 if __name__ == "__main__":
   main()

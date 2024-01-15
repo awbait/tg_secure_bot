@@ -19,4 +19,4 @@ COPY src/ .
 RUN mkdir -p /app/sessions
 
 # команда, выполняемая при запуске контейнера
-CMD [ "python", "main.py" ]
+CMD [ "python", "-u", "main.py" ]
