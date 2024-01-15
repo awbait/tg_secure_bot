@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  tg_secure_bot:
+    image: awbait/trend_secure_bot:0.1.0
+    volumes:
+      - ./credentials.json:/app/credentials.json
+    environment:
+      - TG_API_ID = 123
+      - TG_API_HASH = 
+      - TG_BOT_TOKEN = 
+      - TG_ADMIN_CHANNEL_ID = 
+      - SСHEDULE_TIME = 21:00
+      - GSPREAD_CREDENTIALS_JSON_FILE = credentials.json
+      - GSPREAD_NAME = TREND_SECURITY
