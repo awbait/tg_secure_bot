@@ -66,12 +66,10 @@ def checkUsers(client):
           connected.kick_participant(chatId, participant.id)
           print(
             f"User {user} removed from the group {chatId}: {channel_entity.title}")
-          connected.send_message(
-            TG_ADMIN_CHANNEL_ID, f"Пользователь @{participant.username} удалён из канала: **{channel_entity.title}**")
+          connected.send_message(int(TG_ADMIN_CHANNEL_ID), f"Пользователь @{participant.username} удалён из канала: **{channel_entity.title}**")
         except errors.rpcerrorlist.ChatAdminRequiredError as e:
           # ОШИБКА: У бота отсутствуют права администратора
-          connected.send_message(
-            TG_ADMIN_CHANNEL_ID, f"Отсутствуют права администратора в канале: **{channel_entity.title}**")
+          connected.send_message(int(TG_ADMIN_CHANNEL_ID), f"Отсутствуют права администратора в канале: **{channel_entity.title}**")
           print(
             f"Error: {e}: Insufficient admin privileges in the group: **{channel_entity.title}**.")
         except Exception as e:
